@@ -19,7 +19,7 @@ export default function Navbar() {
         PrepWise AI
       </Link>
 
-      <div className="flex items-center gap-6">
+      <div className="text-black flex items-center gap-6">
         <Link href="/dashboard">Dashboard</Link>
         <Link href="/planner">Planner</Link>
         <Link href="/plans">Saved Plans</Link>
