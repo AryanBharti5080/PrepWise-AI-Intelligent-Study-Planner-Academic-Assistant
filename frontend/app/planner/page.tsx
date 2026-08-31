@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import { generateStudyPlan } from "@/services/planner";
+import ReactMarkdown from "react-markdown";
+import { generateStudyPlan,saveStudyPlan, } from "@/services/planner";
+import { supabase } from "@/lib/supabase";
+
 
 export default function PlannerPage() {
   const [subject, setSubject] = useState("");
@@ -11,11 +14,12 @@ export default function PlannerPage() {
   const [studyHours, setStudyHours] = useState("");
   const [plan, setPlan] = useState("");
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
 
   async function handleSubmit(e: React.FormEvent) {
   e.preventDefault();
-  
+
   setPlan("");
   setLoading(true);
 
@@ -36,6 +40,30 @@ try {
 }
  
 }
+
+async function handleSavePlan() {
+  if (!plan) return;
+
+  setSaving(true);
+
+  try {
+    await saveStudyPlan({
+      subject,
+      topics,
+      exam_date: examDate,
+      study_hours: Number(studyHours),
+      generated_plan: plan,
+    });
+
+    alert("Study plan saved successfully!");
+  } catch (error) {
+    console.error(error);
+    alert("Failed to save study plan.");
+  } finally {
+    setSaving(false);
+  }
+}
+
 return (
     <>
       <Navbar />
@@ -127,8 +155,17 @@ return (
     </h2>
 
     <div className="whitespace-pre-wrap leading-8 text-gray-700">
-      {plan}
+      <ReactMarkdown>{plan}</ReactMarkdown>
     </div>
+    <div className="mt-8 border-t pt-6">
+      <button
+        onClick={handleSavePlan}
+        disabled={saving}
+        className="rounded-lg bg-green-600 px-6 py-3 font-medium text-white hover:bg-green-700 disabled:opacity-50"
+      >
+        {saving ? "Saving..." : "Save Study Plan"}
+      </button>
+</div>
   </div>
 )}
       </main>

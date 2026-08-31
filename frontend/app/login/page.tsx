@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import {useEffect} from "react";
 import { getCurrentUser } from "@/lib/auth";
 
 export default function LoginPage() {
@@ -13,19 +13,18 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-
   useEffect(() => {
     async function checkUser() {
       const user = await getCurrentUser();
 
-      if ( user) {
+      if (user) {
         router.replace("/dashboard");
       }
     }
-    
+
     checkUser();
   }, [router]);
-  
+
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
 
@@ -47,40 +46,112 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-100">
-      <form
-        onSubmit={handleLogin}
-        className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg"
-      >
-        <h1 className="mb-6 text-center text-3xl font-bold text-gray-900">
-          Login
-        </h1>
-
-        <input
-          className="mb-4 w-full rounded-lg border border-gray-300 bg-white p-3 text-black placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <input
-          className="mb-6 w-full rounded-lg border border-gray-300 bg-white p-3 text-black placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <button
-          className="w-full rounded bg-blue-600 p-3 text-white hover:bg-blue-700 disabled:opacity-50"
-          disabled={loading}
+    <main className="min-h-screen bg-slate-950 text-white">
+      {/* Navigation */}
+      <nav className="flex items-center justify-between border-b border-slate-800 px-6 py-5 md:px-12">
+        <Link
+          href="/"
+          className="text-2xl font-bold tracking-tight text-blue-500"
         >
-          {loading ? "Signing In..." : "Login"}
-        </button>
-      </form>
+          PrepWise AI
+        </Link>
+
+        <Link
+          href="/register"
+          className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+        >
+          Register
+        </Link>
+      </nav>
+
+      {/* Login */}
+      <section className="flex min-h-[calc(100vh-81px)] items-center justify-center px-6 py-12">
+        <div className="w-full max-w-md">
+          {/* Heading */}
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-5 inline-flex rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-sm text-blue-400">
+              Welcome Back
+            </div>
+
+            <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
+              Login to{" "}
+              <span className="text-blue-500">PrepWise AI</span>
+            </h1>
+
+            <p className="mt-4 text-slate-400">
+              Continue your personalized study journey.
+            </p>
+          </div>
+
+          {/* Card */}
+          <form
+            onSubmit={handleLogin}
+            className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-2xl md:p-8"
+          >
+            <div className="space-y-5">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="mb-2 block text-sm font-medium text-slate-300"
+                >
+                  Email
+                </label>
+
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3.5 text-white outline-none transition placeholder:text-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="password"
+                  className="mb-2 block text-sm font-medium text-slate-300"
+                >
+                  Password
+                </label>
+
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3.5 text-white outline-none transition placeholder:text-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-7 w-full rounded-xl bg-blue-600 px-5 py-3.5 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? "Signing In..." : "Login"}
+            </button>
+
+            <p className="mt-6 text-center text-sm text-slate-400">
+              Don't have an account?{" "}
+              <Link
+                href="/register"
+                className="font-medium text-blue-500 transition hover:text-blue-400"
+              >
+                Create one
+              </Link>
+            </p>
+          </form>
+
+          <p className="mt-6 text-center text-xs text-slate-600">
+            Your account is securely managed through Supabase Authentication.
+          </p>
+        </div>
+      </section>
     </main>
   );
 }
