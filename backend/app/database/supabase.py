@@ -9,7 +9,9 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
-    raise RuntimeError("Supabase environment variables are missing.")
+    raise RuntimeError(
+        "SUPABASE_URL or SUPABASE_KEY is missing."
+    )
 
 supabase: Client = create_client(
     SUPABASE_URL,

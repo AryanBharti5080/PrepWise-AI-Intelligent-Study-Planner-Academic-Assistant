@@ -14,17 +14,6 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function checkUser() {
-      const user = await getCurrentUser();
-
-      if (user) {
-        router.replace("/dashboard");
-      }
-    }
-
-    checkUser();
-  }, [router]);
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
