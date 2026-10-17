@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.planner import router as planner_router
 from app.api.dashboard import router as dashboard_router
 
+from app.api.career import router as career_router
+
 app = FastAPI(
     title="PrepWise AI API",
     version="1.0.0"
@@ -23,6 +25,7 @@ app.add_middleware(
 
 app.include_router(planner_router)
 app.include_router(dashboard_router)
+app.include_router(career_router)
 
 @app.get("/")
 def root():
