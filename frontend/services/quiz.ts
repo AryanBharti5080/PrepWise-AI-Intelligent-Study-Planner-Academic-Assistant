@@ -36,8 +36,20 @@ export async function submitQuiz(data: QuizSubmitRequest) {
   return response.data;
 }
 
-export async function getQuizHistory() {
-  const response = await api.get("/quiz/history");
+export interface QuizHistoryItem {
+  id: string;
+  subject: string;
+  topic: string;
+  difficulty: string;
+  total_questions: number;
+  score: number | null;
+  percentage: number | null;
+  submitted: boolean;
+  created_at: string;
+}
+
+export async function getQuizHistory(): Promise<QuizHistoryItem[]> {
+  const response = await api.get<QuizHistoryItem[]>("/quiz/history");
   return response.data;
 }
 

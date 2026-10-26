@@ -227,23 +227,39 @@ async def get_quiz_history(
         )
 
         history = []
+        rows = result.data if isinstance(getattr(result, "data", None), list) else []
 
-        for quiz in result.data:
-            submitted = bool(quiz["answers"])
+        for quiz in rows:
+            answers_val = quiz.get("answers")
+            if isinstance(answers_val, str):
+                import json
+                try:
+                    answers_dict = json.loads(answers_val)
+                except Exception:
+                    answers_dict = {}
+            elif isinstance(answers_val, dict):
+                answers_dict = answers_val
+            else:
+                answers_dict = {}
+
+            submitted = bool(answers_dict)
+            score_val = quiz.get("score")
+            total_questions = int(quiz.get("total_questions") or 1)
+
+            percentage = None
+            if submitted and score_val is not None and total_questions > 0:
+                percentage = round((float(score_val) / float(total_questions)) * 100, 2)
 
             history.append({
-                "id": quiz["id"],
-                "subject": quiz["subject"],
-                "topic": quiz["topic"],
-                "difficulty": quiz["difficulty"],
-                "total_questions": quiz["total_questions"],
-                "score": quiz["score"] if submitted else None,
-                "percentage": (
-                    round(quiz["score"] / quiz["total_questions"] * 100, 2)
-                    if submitted else None
-                ),
+                "id": str(quiz.get("id")),
+                "subject": quiz.get("subject") or "Untitled Subject",
+                "topic": quiz.get("topic") or "General",
+                "difficulty": quiz.get("difficulty") or "Medium",
+                "total_questions": total_questions,
+                "score": int(score_val) if (submitted and score_val is not None) else None,
+                "percentage": percentage,
                 "submitted": submitted,
-                "created_at": quiz["created_at"],
+                "created_at": quiz.get("created_at"),
             })
 
         return history

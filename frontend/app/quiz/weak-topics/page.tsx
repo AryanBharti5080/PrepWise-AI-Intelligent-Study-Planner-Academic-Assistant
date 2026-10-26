@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
+import AppLayout from "@/components/AppLayout";
 import { getCurrentUser } from "@/lib/auth";
 import { getWeakTopics } from "@/services/quiz";
 
@@ -61,19 +61,18 @@ export default function WeakTopicsPage() {
   }, [router, loadAnalysis]);
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <Navbar />
-
-      <div className="mx-auto max-w-5xl px-4 py-10">
+    <AppLayout>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+        <div className="mx-auto max-w-5xl px-4 py-10">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600">
+            <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
               PrepWise AI
             </p>
             <h1 className="mt-2 text-3xl font-bold">
               Weak Topic Analysis
             </h1>
-            <p className="mt-2 text-slate-600">
+            <p className="mt-2 text-slate-600 dark:text-slate-400">
               Identify topics that need more practice using your submitted quiz results.
             </p>
           </div>
@@ -96,7 +95,7 @@ export default function WeakTopicsPage() {
         </div>
 
         {loading && (
-          <p className="py-12 text-center text-slate-600">
+          <p className="py-12 text-center text-slate-600 dark:text-slate-400">
             Analyzing your performance...
           </p>
         )}
@@ -113,25 +112,25 @@ export default function WeakTopicsPage() {
         {!loading && !error && data && (
           <>
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-sm text-slate-500">Topics Assessed</p>
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+                <p className="text-sm text-slate-500 dark:text-slate-400">Topics Assessed</p>
                 <p className="mt-2 text-3xl font-bold">
                   {data.topics_analyzed}
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-sm text-slate-500">Topics Needing Practice</p>
-                <p className="mt-2 text-3xl font-bold text-red-600">
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+                <p className="text-sm text-slate-500 dark:text-slate-400">Topics Needing Practice</p>
+                <p className="mt-2 text-3xl font-bold text-red-600 dark:text-red-400">
                   {data.weak_topics.length}
                 </p>
               </div>
             </div>
 
             {data.topic_performance.length === 0 ? (
-              <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-8 text-center">
+              <div className="mt-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 text-center">
                 <h2 className="text-xl font-bold">No results to analyze yet</h2>
-                <p className="mt-2 text-slate-600">
+                <p className="mt-2 text-slate-600 dark:text-slate-400">
                   Submit a quiz to see your topic performance.
                 </p>
                 <button
@@ -149,12 +148,12 @@ export default function WeakTopicsPage() {
                   {data.topic_performance.map((item) => (
                     <article
                       key={`${item.subject}-${item.topic}`}
-                      className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                      className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
                     >
                       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                         <div>
                           <h3 className="font-bold">{item.topic}</h3>
-                          <p className="mt-1 text-sm text-slate-500">
+                          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                             {item.subject} · {item.attempts} submitted attempt(s)
                           </p>
                         </div>
@@ -162,8 +161,8 @@ export default function WeakTopicsPage() {
                         <span
                           className={`w-fit rounded-full px-3 py-1 text-sm font-semibold ${
                             item.needs_practice
-                              ? "bg-red-100 text-red-700"
-                              : "bg-emerald-100 text-emerald-700"
+                              ? "bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/50"
+                              : "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/50"
                           }`}
                         >
                           {item.needs_practice
@@ -173,13 +172,13 @@ export default function WeakTopicsPage() {
                       </div>
 
                       <div className="mt-5 flex items-center justify-between text-sm">
-                        <span className="text-slate-600">Average score</span>
+                        <span className="text-slate-600 dark:text-slate-400">Average score</span>
                         <span className="font-bold">
                           {item.average_percentage}%
                         </span>
                       </div>
 
-                      <div className="mt-2 h-3 overflow-hidden rounded-full bg-slate-100">
+                      <div className="mt-2 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                         <div
                           className={`h-full rounded-full ${
                             item.needs_practice
@@ -199,6 +198,7 @@ export default function WeakTopicsPage() {
           </>
         )}
       </div>
-    </main>
+    </div>
+    </AppLayout>
   );
 }

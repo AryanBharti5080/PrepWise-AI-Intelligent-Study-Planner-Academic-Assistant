@@ -2,11 +2,16 @@ from datetime import date, datetime, timedelta
 from collections import defaultdict
 import os
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from supabase import create_client
 
 from app.utils.auth import get_current_user
+from app.services.progress_service import (
+    extract_plan_topics,
+    build_quiz_stats_map,
+    resolve_topic_progress,
+)
 
 
 router = APIRouter(
@@ -35,8 +40,10 @@ def normalize_subject(subject):
 
 @router.get("/stats")
 async def get_dashboard_stats(
+    response: Response,
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     access_token = credentials.credentials
 
     try:
@@ -74,13 +81,74 @@ async def get_dashboard_stats(
             .execute()
         )
 
-        plans = result.data or []
+        plans = result.data if isinstance(getattr(result, "data", None), list) else []
+
+        # 3b. Fetch this user's quiz attempts
+        quiz_result = (
+            user_supabase
+            .table("quiz_attempts")
+            .select(
+                "id, subject, topic, difficulty, total_questions, score, created_at, answers"
+            )
+            .eq("user_id", user_id)
+            .order("created_at", desc=True)
+            .execute()
+        )
+
+        quizzes = quiz_result.data if isinstance(getattr(quiz_result, "data", None), list) else []
+
+        # 3c. Fetch this user's study progress
+        progress_data = []
+        try:
+            progress_res = (
+                user_supabase
+                .table("study_progress")
+                .select("id, plan_id, topic, status, completed_at, updated_at")
+                .eq("user_id", user_id)
+                .execute()
+            )
+            progress_data = progress_res.data if isinstance(getattr(progress_res, "data", None), list) else []
+        except Exception as p_err:
+            print(f"Notice: study_progress query skipped: {p_err}")
+
+        user_progress_map = {
+            (str(row.get("plan_id", "")).strip(), str(row.get("topic", "")).strip().casefold()): row
+            for row in progress_data
+        }
+
+        # Build quiz statistics map for quiz-derived progress inference
+        quiz_stats = build_quiz_stats_map(quizzes)
+
+        # 3d. Fetch this user's revision tasks (Revision Assistant metrics)
+        revision_data = []
+        try:
+            rev_res = (
+                user_supabase
+                .table("revision_tasks")
+                .select("id, is_completed")
+                .eq("user_id", user_id)
+                .execute()
+            )
+            revision_data = rev_res.data if isinstance(getattr(rev_res, "data", None), list) else []
+        except Exception as rev_err:
+            print(f"Notice: revision_tasks query skipped: {rev_err}")
+
+        total_rev_tasks = len(revision_data)
+        completed_rev_tasks = sum(1 for t in revision_data if t.get("is_completed"))
+        rev_completion_pct = (
+            round((completed_rev_tasks / total_rev_tasks) * 100, 1)
+            if total_rev_tasks > 0
+            else 0.0
+        )
 
         today = date.today()
         now = datetime.now()
 
         # 4. Normalize and prepare plan data
         normalized_plans = []
+        total_syllabus_topics = 0
+        completed_syllabus_topics = 0
+        in_progress_syllabus_topics = 0
 
         for plan in plans:
             subject = normalize_subject(plan.get("subject"))
@@ -94,12 +162,49 @@ async def get_dashboard_stats(
 
             study_hours = max(study_hours, 0.0)
 
+            # Calculate topic progress for this specific plan
+            plan_id_str = str(plan.get("id", "")).strip()
+            p_topics = extract_plan_topics(plan.get("topics"))
+            plan_comp = 0
+            plan_in_prog = 0
+
+            for t_name in p_topics:
+                total_syllabus_topics += 1
+                st, _, _, _ = resolve_topic_progress(
+                    plan_id=plan_id_str,
+                    subject=subject,
+                    topic_name=t_name,
+                    progress_map=user_progress_map,
+                    quiz_stats=quiz_stats,
+                )
+                if st == "Completed":
+                    plan_comp += 1
+                    completed_syllabus_topics += 1
+                elif st == "In Progress":
+                    plan_in_prog += 1
+                    in_progress_syllabus_topics += 1
+
+            plan_pct = (
+                round((plan_comp / len(p_topics)) * 100, 1)
+                if p_topics
+                else 0.0
+            )
+
             normalized_plans.append({
                 **plan,
                 "subject": subject,
+                "progress_percentage": plan_pct,
+                "completed_topics_count": plan_comp,
+                "total_topics_count": len(p_topics),
                 "_exam_date": exam_date,
                 "_study_hours": study_hours,
             })
+
+        overall_progress_pct = (
+            round((completed_syllabus_topics / total_syllabus_topics) * 100, 1)
+            if total_syllabus_topics > 0
+            else 0.0
+        )
 
         # 5. Summary statistics
         total_plans = len(normalized_plans)
@@ -237,6 +342,9 @@ async def get_dashboard_stats(
                 "exam_date": exam_date.isoformat(),
                 "days_remaining": (exam_date - today).days,
                 "study_hours": plan["_study_hours"],
+                "progress_percentage": plan.get("progress_percentage", 0.0),
+                "completed_topics": plan.get("completed_topics_count", 0),
+                "total_topics": plan.get("total_topics_count", 0),
             })
 
         upcoming_exam_plans.sort(
@@ -308,7 +416,145 @@ async def get_dashboard_stats(
                     ),
                 })
 
-        # 12. Return the complete dashboard response
+        # 12. Enhanced Phase 2: Quiz Analytics & Weak Topics
+        total_quiz_attempts = len(quizzes)
+        submitted_quizzes = [q for q in quizzes if bool(q.get("answers"))]
+        submitted_count = len(submitted_quizzes)
+
+        if submitted_count > 0:
+            avg_quiz_score = round(
+                sum(
+                    (float(q.get("score") or 0) / max(int(q.get("total_questions") or 1), 1)) * 100
+                    for q in submitted_quizzes
+                ) / submitted_count,
+                1,
+            )
+        else:
+            avg_quiz_score = None
+
+        # Weak topics calculation (matching /quiz/weak-topics rule: accuracy < 60%)
+        topic_performance_map = {}
+        for q in submitted_quizzes:
+            subj = normalize_subject(q.get("subject"))
+            top = (q.get("topic") or "").strip()
+            if not subj or not top:
+                continue
+            key = (subj, top)
+            if key not in topic_performance_map:
+                topic_performance_map[key] = {
+                    "attempts": 0,
+                    "total_score": 0,
+                    "total_questions": 0,
+                }
+            topic_performance_map[key]["attempts"] += 1
+            topic_performance_map[key]["total_score"] += float(q.get("score") or 0)
+            topic_performance_map[key]["total_questions"] += max(int(q.get("total_questions") or 1), 1)
+
+        weak_topics_list = []
+        for (subj, top), stats in topic_performance_map.items():
+            pct = round(stats["total_score"] / max(stats["total_questions"], 1) * 100, 1)
+            weak_topics_list.append({
+                "subject": subj,
+                "topic": top,
+                "attempts": stats["attempts"],
+                "average_percentage": pct,
+                "needs_practice": pct < 60.0,
+            })
+        weak_topics_list.sort(key=lambda item: item["average_percentage"])
+        weak_topics_needing_practice = [t for t in weak_topics_list if t["needs_practice"]]
+        weak_topics_count = len(weak_topics_needing_practice)
+
+        # Quiz score trend (chronological order for time series chart)
+        quiz_score_trend = []
+        for q in reversed(submitted_quizzes[:12]):
+            total_q = max(int(q.get("total_questions") or 1), 1)
+            score = float(q.get("score") or 0)
+            pct = round(score / total_q * 100, 1)
+            q_date = parse_date(q.get("created_at"))
+            date_label = q_date.strftime("%d %b") if q_date else "Recent"
+            quiz_score_trend.append({
+                "id": str(q.get("id")),
+                "date": date_label,
+                "full_date": (q_date.isoformat() if q_date else ""),
+                "subject": normalize_subject(q.get("subject")),
+                "topic": (q.get("topic") or "").strip(),
+                "score": int(score),
+                "total_questions": total_q,
+                "percentage": pct,
+                "difficulty": q.get("difficulty") or "Medium",
+            })
+
+        # Subject-wise quiz performance
+        subj_quiz_map = {}
+        for q in submitted_quizzes:
+            subj = normalize_subject(q.get("subject"))
+            if not subj:
+                continue
+            if subj not in subj_quiz_map:
+                subj_quiz_map[subj] = {
+                    "attempts": 0,
+                    "total_score": 0,
+                    "total_questions": 0,
+                }
+            subj_quiz_map[subj]["attempts"] += 1
+            subj_quiz_map[subj]["total_score"] += float(q.get("score") or 0)
+            subj_quiz_map[subj]["total_questions"] += max(int(q.get("total_questions") or 1), 1)
+
+        subject_quiz_performance = []
+        for subj, sdata in subj_quiz_map.items():
+            avg_pct = round(sdata["total_score"] / max(sdata["total_questions"], 1) * 100, 1)
+            subject_quiz_performance.append({
+                "subject": subj,
+                "attempts": sdata["attempts"],
+                "average_percentage": avg_pct,
+            })
+        subject_quiz_performance.sort(key=lambda item: item["attempts"], reverse=True)
+
+        # 13. Combined Recent Activity (study plans + quiz attempts)
+        activity_items = []
+        for plan in normalized_plans[:6]:
+            activity_items.append({
+                "id": str(plan.get("id")),
+                "type": "study_plan",
+                "title": f"Study Plan: {plan['subject']}",
+                "description": f"{plan['_study_hours']} hrs/day · Exam: {plan.get('exam_date') or 'No date'}",
+                "timestamp": plan.get("created_at") or "",
+                "subject": plan["subject"],
+                "badge": "Plan",
+                "link": "/plans",
+            })
+        for q in quizzes[:6]:
+            is_sub = bool(q.get("answers"))
+            total_q = max(int(q.get("total_questions") or 1), 1)
+            score = int(float(q.get("score") or 0))
+            pct = round(score / total_q * 100)
+            subj = normalize_subject(q.get("subject"))
+            top = (q.get("topic") or "").strip()
+            activity_items.append({
+                "id": str(q.get("id")),
+                "type": "quiz",
+                "title": f"Quiz: {subj} ({top})" if top else f"Quiz: {subj}",
+                "description": f"Score: {score}/{total_q} ({pct}%) · {q.get('difficulty') or 'Medium'}" if is_sub else f"{total_q} questions · Unsubmitted",
+                "timestamp": q.get("created_at") or "",
+                "subject": subj,
+                "badge": f"{pct}%" if is_sub else "Incomplete",
+                "link": "/quiz/history",
+            })
+        activity_items.sort(key=lambda item: item.get("timestamp") or "", reverse=True)
+        recent_activity = activity_items[:8]
+
+        # Add weak topics insight if any
+        if weak_topics_count > 0:
+            insights.append({
+                "type": "suggestion",
+                "title": "Revision alert",
+                "message": (
+                    f"You have {weak_topics_count} topic(s) with under 60% accuracy. "
+                    "Review them in Weak Topic Analysis to strengthen your preparation."
+                ),
+            })
+
+        # 14. Return the complete enhanced dashboard response
         return {
             "total_plans": total_plans,
             "subjects_studied": subjects_studied,
@@ -320,6 +566,32 @@ async def get_dashboard_stats(
             "study_activity": study_activity,
             "upcoming_exam_plans": upcoming_exam_plans[:10],
             "insights": insights,
+
+            # Enhanced Phase 2 fields
+            "total_quiz_attempts": total_quiz_attempts,
+            "submitted_quiz_attempts": submitted_count,
+            "average_quiz_score": avg_quiz_score,
+            "weak_topics_count": weak_topics_count,
+            "weak_topics_summary": weak_topics_needing_practice[:6],
+            "quiz_score_trend": quiz_score_trend,
+            "subject_quiz_performance": subject_quiz_performance[:8],
+            "recent_activity": recent_activity,
+
+            # Phase 4: Study Progress Tracker summary
+            "study_progress_summary": {
+                "total_topics": total_syllabus_topics,
+                "completed_topics": completed_syllabus_topics,
+                "in_progress_topics": in_progress_syllabus_topics,
+                "not_started_topics": max(total_syllabus_topics - completed_syllabus_topics - in_progress_syllabus_topics, 0),
+                "progress_percentage": overall_progress_pct,
+            },
+
+            # Phase 3: AI Revision Assistant summary
+            "revision_summary": {
+                "total_tasks": total_rev_tasks,
+                "completed_tasks": completed_rev_tasks,
+                "completion_percentage": rev_completion_pct,
+            },
         }
 
     except HTTPException:

@@ -1,15 +1,15 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pathlib import Path
 import os
 import httpx
 from dotenv import load_dotenv
 
+env_path = Path(__file__).resolve().parent.parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
 load_dotenv()
 
 security = HTTPBearer(auto_error=True)
-
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 
 async def get_current_user(
@@ -17,11 +17,15 @@ async def get_current_user(
 ):
     token = credentials.credentials
 
-    print("AUTH HEADER RECEIVED")
-    print("TOKEN TYPE:", credentials.scheme)
-    print("TOKEN LENGTH:", len(token))
+    supabase_url = os.getenv("SUPABASE_URL")
+    supabase_key = os.getenv("SUPABASE_KEY")
 
-    if not SUPABASE_URL or not SUPABASE_KEY:
+    if not supabase_url or not supabase_key:
+        load_dotenv(dotenv_path=env_path)
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_KEY")
+
+    if not supabase_url or not supabase_key:
         raise HTTPException(
             status_code=500,
             detail="Supabase environment variables are missing.",
@@ -30,18 +34,14 @@ async def get_current_user(
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"{SUPABASE_URL}/auth/v1/user",
+                f"{supabase_url}/auth/v1/user",
                 headers={
                     "Authorization": f"Bearer {token}",
-                    "apikey": SUPABASE_KEY,
+                    "apikey": supabase_key,
                 },
             )
 
-        print("SUPABASE STATUS:", response.status_code)
-
         if response.status_code != 200:
-            print("SUPABASE RESPONSE:", response.text)
-
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid or expired access token.",

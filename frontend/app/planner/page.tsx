@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Navbar from "@/components/Navbar";
+import AppLayout from "@/components/AppLayout";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { generateStudyPlan, saveStudyPlan } from "@/services/planner";
@@ -326,13 +326,11 @@ export default function PlannerPage() {
     savedPlanKeys.current.has(currentGeneratedKey);
 
   return (
-    <>
-      <Navbar />
-
-      <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900 sm:px-6 lg:px-8">
+    <AppLayout>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 px-4 py-8 text-slate-900 dark:text-slate-100 transition-colors sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           {/* Hero */}
-          <section className="relative mb-8 overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 via-indigo-700 to-violet-800 p-6 text-white shadow-lg sm:p-9">
+          <section className="relative mb-8 overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 via-indigo-700 to-violet-800 dark:from-blue-900 dark:via-indigo-900 dark:to-slate-900 p-6 text-white shadow-lg sm:p-9 border border-transparent dark:border-slate-800">
             <div className="pointer-events-none absolute -right-12 -top-16 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
 
             <div className="relative max-w-3xl">
@@ -369,7 +367,7 @@ export default function PlannerPage() {
             <div
               role="status"
               aria-live="polite"
-              className="mb-5 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-emerald-900"
+              className="mb-5 flex items-start gap-3 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/40 p-4 text-sm leading-6 text-emerald-900 dark:text-emerald-200"
             >
               <span aria-hidden="true" className="font-bold">
                 ✓
@@ -381,7 +379,7 @@ export default function PlannerPage() {
           {errorMessage && (
             <div
               role="alert"
-              className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800"
+              className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-4 text-sm leading-6 text-red-800 dark:text-red-200"
             >
               <span aria-hidden="true" className="font-bold">
                 !
@@ -393,18 +391,18 @@ export default function PlannerPage() {
           {/* Form */}
           <form
             onSubmit={handleSubmit}
-            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8"
+            className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm sm:p-8"
           >
-            <div className="mb-7 border-b border-slate-100 pb-5">
-              <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">
+            <div className="mb-7 border-b border-slate-100 dark:border-slate-800 pb-5">
+              <p className="text-sm font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400">
                 Start preparing
               </p>
 
-              <h2 className="mt-2 text-2xl font-bold text-slate-900">
+              <h2 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
                 Tell us about your exam
               </h2>
 
-              <p className="mt-2 text-sm leading-6 text-slate-600">
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
                 Complete these four fields to create your study plan.
               </p>
             </div>
@@ -414,7 +412,7 @@ export default function PlannerPage() {
               <div>
                 <label
                   htmlFor="subject"
-                  className="mb-2 block text-sm font-semibold text-slate-800"
+                  className="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-200"
                 >
                   Subject name <span className="text-red-500">*</span>
                 </label>
@@ -431,10 +429,10 @@ export default function PlannerPage() {
                   maxLength={100}
                   required
                   disabled={loading || saving}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 disabled:bg-slate-100"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-4 py-3 text-base text-slate-900 dark:text-slate-100 outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/40 disabled:bg-slate-100 dark:disabled:bg-slate-900"
                 />
 
-                <p className="mt-2 text-xs text-slate-500">
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                   Enter the subject you are preparing for.
                 </p>
               </div>
@@ -443,7 +441,7 @@ export default function PlannerPage() {
               <div>
                 <label
                   htmlFor="examDate"
-                  className="mb-2 block text-sm font-semibold text-slate-800"
+                  className="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-200"
                 >
                   Examination date{" "}
                   <span className="text-red-500">*</span>
@@ -460,10 +458,10 @@ export default function PlannerPage() {
                   }}
                   required
                   disabled={loading || saving}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100 disabled:bg-slate-100"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-4 py-3 text-base text-slate-900 dark:text-slate-100 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/40 disabled:bg-slate-100 dark:disabled:bg-slate-900"
                 />
 
-                <p className="mt-2 text-xs text-slate-500">
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                   Choose your upcoming exam date.
                 </p>
               </div>
@@ -473,13 +471,13 @@ export default function PlannerPage() {
                 <div className="mb-2 flex items-center justify-between gap-3">
                   <label
                     htmlFor="topics"
-                    className="block text-sm font-semibold text-slate-800"
+                    className="block text-sm font-semibold text-slate-800 dark:text-slate-200"
                   >
                     Topics to cover{" "}
                     <span className="text-red-500">*</span>
                   </label>
 
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
                     {topics.length}/5000
                   </span>
                 </div>
@@ -498,10 +496,10 @@ export default function PlannerPage() {
                   maxLength={5000}
                   required
                   disabled={loading || saving}
-                  className="w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-base leading-7 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 disabled:bg-slate-100"
+                  className="w-full resize-y rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-4 py-3 text-base leading-7 text-slate-900 dark:text-slate-100 outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/40 disabled:bg-slate-100 dark:disabled:bg-slate-900"
                 />
 
-                <p className="mt-2 text-xs leading-5 text-slate-500">
+                <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
                   Separate topics with commas or list them on separate lines.
                 </p>
               </div>
@@ -510,7 +508,7 @@ export default function PlannerPage() {
               <div>
                 <label
                   htmlFor="studyHours"
-                  className="mb-2 block text-sm font-semibold text-slate-800"
+                  className="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-200"
                 >
                   Available study hours{" "}
                   <span className="text-red-500">*</span>
@@ -531,31 +529,31 @@ export default function PlannerPage() {
                     }}
                     required
                     disabled={loading || saving}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 pr-20 text-base text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 disabled:bg-slate-100"
+                    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-4 py-3 pr-20 text-base text-slate-900 dark:text-slate-100 outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/40 disabled:bg-slate-100 dark:disabled:bg-slate-900"
                   />
 
-                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-slate-500">
+                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-slate-500 dark:text-slate-400">
                     hrs/day
                   </span>
                 </div>
 
-                <p className="mt-2 text-xs text-slate-500">
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                   Choose between 1 and 12 hours per day.
                 </p>
               </div>
 
               {/* Dynamic preparation hint */}
-              <div className="flex items-center rounded-xl border border-blue-100 bg-blue-50 p-4">
-                <div className="mr-3 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl">
+              <div className="flex items-center rounded-xl border border-blue-100 dark:border-blue-900/60 bg-blue-50 dark:bg-blue-950/40 p-4">
+                <div className="mr-3 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-xl border border-blue-100 dark:border-slate-700">
                   📅
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white">
                     Your preparation, organized
                   </p>
 
-                  <p className="mt-1 text-xs leading-5 text-slate-600">
+                  <p className="mt-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
                     Your plan will be based on your topics, available time,
                     and examination date.
                   </p>
@@ -563,15 +561,15 @@ export default function PlannerPage() {
               </div>
             </div>
 
-            <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs leading-5 text-slate-500">
+            <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 dark:border-slate-800 pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
                 Review your details before generating your plan.
               </p>
 
               <button
                 type="submit"
                 disabled={loading || saving}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 px-6 py-3 font-semibold text-white shadow-sm transition focus:outline-none focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? (
                   <>
@@ -594,7 +592,7 @@ export default function PlannerPage() {
               <div
                 role="status"
                 aria-live="polite"
-                className="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4"
+                className="mt-5 rounded-xl border border-blue-100 dark:border-blue-900/60 bg-blue-50 dark:bg-blue-950/40 p-4"
               >
                 <div className="flex items-center gap-3">
                   <span
@@ -603,11 +601,11 @@ export default function PlannerPage() {
                   />
 
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white">
                       Creating your personalized study plan
                     </p>
 
-                    <p className="mt-1 text-xs leading-5 text-slate-600">
+                    <p className="mt-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
                       Please wait while PrepWise AI organizes your preparation.
                     </p>
                   </div>
@@ -620,26 +618,26 @@ export default function PlannerPage() {
           {plan && generatedInputs && (
             <section
               id="generated-plan"
-              className="mt-8 scroll-mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+              className="mt-8 scroll-mt-6 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
             >
-              <div className="border-b border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-5 sm:p-8">
+              <div className="border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950/40 p-5 sm:p-8">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">
+                    <p className="text-sm font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400">
                       Your personalized schedule
                     </p>
 
-                    <h2 className="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl">
+                    <h2 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
                       Study Plan
                     </h2>
 
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
+                    <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
                       Review your schedule, complete daily tasks, and revise
                       before your examination.
                     </p>
                   </div>
 
-                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-2 text-sm font-medium text-emerald-800">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 dark:border-emerald-900/50 bg-white dark:bg-slate-950 px-3 py-2 text-sm font-medium text-emerald-800 dark:text-emerald-300">
                     <span aria-hidden="true">✓</span>
                     Generated
                   </span>
@@ -647,7 +645,7 @@ export default function PlannerPage() {
               </div>
 
               {/* Summary cards */}
-              <div className="grid gap-4 border-b border-slate-100 p-5 sm:grid-cols-2 sm:p-8 lg:grid-cols-4">
+              <div className="grid gap-4 border-b border-slate-100 dark:border-slate-800 p-5 sm:grid-cols-2 sm:p-8 lg:grid-cols-4">
                 <SummaryCard
                   label="Subject"
                   value={generatedInputs.subject}
@@ -676,11 +674,11 @@ export default function PlannerPage() {
               {/* Markdown content */}
               <div className="p-5 sm:p-8">
                 <div className="mb-6">
-                  <h3 className="text-xl font-bold text-slate-900 sm:text-2xl">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">
                     Your Study Schedule
                   </h3>
 
-                  <p className="mt-2 text-sm leading-6 text-slate-500">
+                  <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
                     Follow the daily schedule and use the revision guidance
                     to reinforce what you learn.
                   </p>
@@ -688,23 +686,23 @@ export default function PlannerPage() {
 
                 <div
                   className="
-                    max-w-none break-words text-base leading-7 text-slate-700
-                    [&_h1]:mb-4 [&_h1]:mt-8 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:text-slate-900
-                    [&_h2]:mb-3 [&_h2]:mt-8 [&_h2]:border-b [&_h2]:border-slate-200 [&_h2]:pb-2 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-slate-900
-                    [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-slate-900
+                    max-w-none break-words text-base leading-7 text-slate-700 dark:text-slate-300
+                    [&_h1]:mb-4 [&_h1]:mt-8 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:text-slate-900 dark:[&_h1]:text-white
+                    [&_h2]:mb-3 [&_h2]:mt-8 [&_h2]:border-b [&_h2]:border-slate-200 dark:[&_h2]:border-slate-800 [&_h2]:pb-2 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-slate-900 dark:[&_h2]:text-white
+                    [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-slate-900 dark:[&_h3]:text-white
                     [&_p]:my-3
-                    [&_strong]:font-bold [&_strong]:text-slate-900
+                    [&_strong]:font-bold [&_strong]:text-slate-900 dark:[&_strong]:text-white
                     [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6
                     [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6
                     [&_li]:my-1
-                    [&_hr]:my-6 [&_hr]:border-slate-200
-                    [&_blockquote]:my-4 [&_blockquote]:border-l-4 [&_blockquote]:border-blue-200 [&_blockquote]:pl-4
-                    [&_a]:text-blue-700 [&_a]:underline
-                    [&_pre]:my-4 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:bg-slate-100 [&_pre]:p-4
-                    [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1
+                    [&_hr]:my-6 [&_hr]:border-slate-200 dark:[&_hr]:border-slate-800
+                    [&_blockquote]:my-4 [&_blockquote]:border-l-4 [&_blockquote]:border-blue-300 dark:[&_blockquote]:border-blue-700 [&_blockquote]:pl-4
+                    [&_a]:text-blue-700 dark:[&_a]:text-blue-400 [&_a]:underline
+                    [&_pre]:my-4 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:bg-slate-100 dark:[&_pre]:bg-slate-950 [&_pre]:p-4
+                    [&_code]:rounded [&_code]:bg-slate-100 dark:[&_code]:bg-slate-800 [&_code]:px-1
                     [&_table]:my-5 [&_table]:w-full [&_table]:border-collapse
-                    [&_th]:border [&_th]:border-slate-200 [&_th]:bg-slate-50 [&_th]:p-3 [&_th]:text-left
-                    [&_td]:border [&_td]:border-slate-200 [&_td]:p-3
+                    [&_th]:border [&_th]:border-slate-200 dark:[&_th]:border-slate-800 [&_th]:bg-slate-50 dark:[&_th]:bg-slate-950 [&_th]:p-3 [&_th]:text-left
+                    [&_td]:border [&_td]:border-slate-200 dark:[&_td]:border-slate-800 [&_td]:p-3
                   "
                 >
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -713,14 +711,14 @@ export default function PlannerPage() {
                 </div>
 
                 {/* Save plan */}
-                <div className="mt-8 border-t border-slate-200 pt-6">
+                <div className="mt-8 border-t border-slate-200 dark:border-slate-800 pt-6">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <h3 className="font-bold text-slate-900">
+                      <h3 className="font-bold text-slate-900 dark:text-white">
                         Save your progress
                       </h3>
 
-                      <p className="mt-1 text-sm leading-6 text-slate-500">
+                      <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
                         Save this study plan so you can access it later.
                       </p>
                     </div>
@@ -729,7 +727,7 @@ export default function PlannerPage() {
                       type="button"
                       onClick={handleSavePlan}
                       disabled={saving || saved || isCurrentPlanSaved || loading}
-                      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-100 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-500 px-5 py-3 font-semibold text-white transition focus:outline-none focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {saving
                         ? "Saving plan..."
@@ -743,7 +741,7 @@ export default function PlannerPage() {
                     <p
                       role="status"
                       aria-live="polite"
-                      className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm font-medium text-emerald-800"
+                      className="mt-4 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/40 p-3 text-sm font-medium text-emerald-800 dark:text-emerald-200"
                     >
                       ✓ This plan has been saved during this session.
                     </p>
@@ -753,8 +751,8 @@ export default function PlannerPage() {
             </section>
           )}
         </div>
-      </main>
-    </>
+      </div>
+    </AppLayout>
   );
 }
 
@@ -768,19 +766,19 @@ function SummaryCard({
   icon: string;
 }) {
   return (
-    <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-4">
+    <div className="min-w-0 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-medium text-slate-500">{label}</p>
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</p>
 
         <span
           aria-hidden="true"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-lg"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-800 text-lg border border-slate-100 dark:border-slate-700"
         >
           {icon}
         </span>
       </div>
 
-      <p className="mt-3 break-words text-lg font-bold text-slate-900">
+      <p className="mt-3 break-words text-lg font-bold text-slate-900 dark:text-white">
         {value}
       </p>
     </div>
