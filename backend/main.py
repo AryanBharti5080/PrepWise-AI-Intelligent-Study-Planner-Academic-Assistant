@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -19,6 +20,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Standard local development origins
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -28,10 +30,18 @@ origins = [
     "http://127.0.0.1:8000",
 ]
 
+# Allow custom production frontend origins configured via FRONTEND_URL
+frontend_url_env = os.getenv("FRONTEND_URL")
+if frontend_url_env:
+    for url in frontend_url_env.split(","):
+        cleaned = url.strip().rstrip("/")
+        if cleaned and cleaned not in origins:
+            origins.append(cleaned)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$",
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$|^https://.*\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
