@@ -54,6 +54,8 @@ export default function RegisterPage() {
       return;
     }
 
+    await supabase.auth.signOut();
+
     setSuccessMessage("Account created successfully! Redirecting to login...");
     setTimeout(() => {
       router.push("/login");
