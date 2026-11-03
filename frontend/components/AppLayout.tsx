@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import Sidebar from "./Sidebar";
 import ThemeToggle from "./ThemeToggle";
+import AnimatedBackground from "./AnimatedBackground";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -37,7 +38,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
   }, [mobileMenuOpen]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col transition-colors duration-150 dark:bg-slate-950 dark:text-slate-100">
+    <div className="relative min-h-screen text-slate-900 flex flex-col transition-colors duration-150 dark:text-slate-100">
+      {/* Background System for Authenticated Pages */}
+      <AnimatedBackground />
+
       {/* Desktop Fixed Sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-30 lg:flex lg:w-64">
         <Sidebar />

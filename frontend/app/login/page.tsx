@@ -1,11 +1,10 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { getCurrentUser } from "@/lib/auth";
 import { AlertCircle, Lock, Mail } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import AnimatedBackground from "@/components/AnimatedBackground";
@@ -18,17 +17,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    async function checkUser() {
-      const user = await getCurrentUser();
 
-      if (user) {
-        router.replace("/dashboard");
-      }
-    }
-
-    checkUser();
-  }, [router]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();

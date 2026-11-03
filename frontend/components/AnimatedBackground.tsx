@@ -7,11 +7,16 @@ export default function AnimatedBackground() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    // Schedule state update after mount to avoid synchronous cascading render warning
+    const rafId = requestAnimationFrame(() => {
+      setMounted(true);
+    });
 
     // Check prefers-reduced-motion
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mediaQuery.matches) return;
+    if (mediaQuery.matches) {
+      return () => cancelAnimationFrame(rafId);
+    }
 
     let timeoutId: number | null = null;
     const handleMouseMove = (e: MouseEvent) => {
@@ -20,7 +25,7 @@ export default function AnimatedBackground() {
         timeoutId = window.setTimeout(() => {
           setMousePos({ x: e.clientX, y: e.clientY });
           timeoutId = null;
-        }, 16);
+        }, 32);
       }
     };
 
@@ -36,35 +41,31 @@ export default function AnimatedBackground() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
     >
-      {/* 1. Base Mesh Gradient Layer */}
-      <div className="absolute inset-0 bg-radial-mesh-light dark:bg-radial-mesh-dark opacity-90 transition-opacity duration-700" />
+      {/* 1. Base Subtle Mesh Gradient Layer */}
+      <div className="absolute inset-0 bg-radial-mesh-light dark:bg-radial-mesh-dark opacity-100 transition-opacity duration-500" />
 
-      {/* 2. Futuristic Tech Grid Overlay */}
+      {/* 2. Delicate Educational Grid Overlay */}
       <div className="absolute inset-0 bg-cyber-grid-light dark:bg-cyber-grid-dark" />
 
-      {/* 3. Floating Ambient Glowing Orbs */}
-      <div className="absolute -top-32 -left-24 h-[550px] w-[550px] rounded-full bg-gradient-to-br from-blue-400/35 via-indigo-400/25 to-transparent blur-[110px] animate-orb-float-1 dark:from-blue-600/30 dark:via-indigo-600/20" />
+      {/* 3. Soft Ambient Accent Orbs (Restrained opacity and smooth blur) */}
+      <div className="absolute -top-24 -left-20 h-[480px] w-[480px] rounded-full bg-blue-500/12 dark:bg-blue-600/12 blur-[120px] animate-orb-float-1" />
       
-      <div className="absolute top-[20%] -right-24 h-[580px] w-[580px] rounded-full bg-gradient-to-bl from-cyan-400/30 via-sky-400/20 to-transparent blur-[120px] animate-orb-float-2 dark:from-cyan-500/25 dark:via-blue-600/15" />
+      <div className="absolute top-[25%] -right-20 h-[450px] w-[450px] rounded-full bg-indigo-500/10 dark:bg-indigo-500/12 blur-[130px] animate-orb-float-2" />
       
-      <div className="absolute top-[55%] left-[10%] h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-purple-400/25 via-pink-400/15 to-transparent blur-[110px] animate-orb-float-3 dark:from-purple-600/20 dark:via-indigo-800/15" />
+      <div className="absolute -bottom-24 left-[20%] h-[500px] w-[500px] rounded-full bg-sky-500/10 dark:bg-sky-600/10 blur-[130px] animate-orb-float-3" />
 
-      <div className="absolute -bottom-32 right-[20%] h-[600px] w-[600px] rounded-full bg-gradient-to-tl from-indigo-400/30 via-blue-300/20 to-transparent blur-[130px] animate-orb-float-1 dark:from-blue-500/20 dark:via-indigo-900/20" />
-
-      {/* 4. Interactive Cursor-Following Ambient Glow (Client-only to avoid hydration mismatch) */}
+      {/* 4. Interactive Cursor-Following Ambient Glow (Subtle and non-intrusive) */}
       {mounted && (
         <div
-          className="transition-transform duration-300 ease-out will-change-transform"
+          className="transition-transform duration-500 ease-out will-change-transform"
           style={{
-            transform: `translate3d(${mousePos.x - 220}px, ${mousePos.y - 220}px, 0)`,
+            transform: `translate3d(${mousePos.x - 200}px, ${mousePos.y - 200}px, 0)`,
           }}
         >
-          <div className="h-[440px] w-[440px] rounded-full bg-blue-500/15 dark:bg-cyan-400/12 blur-[80px]" />
+          <div className="h-[400px] w-[400px] rounded-full bg-blue-500/6 dark:bg-blue-400/8 blur-[90px]" />
         </div>
       )}
-
-      {/* 5. Subtle Vignette Depth Framing */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(15,23,42,0.06)_100%)] dark:bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(2,6,23,0.5)_100%)]" />
     </div>
   );
 }
+

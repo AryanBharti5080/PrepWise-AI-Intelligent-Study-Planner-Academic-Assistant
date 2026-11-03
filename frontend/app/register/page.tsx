@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { getCurrentUser } from "@/lib/auth";
 import { AlertCircle, CheckCircle2, Lock, Mail, User } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import AnimatedBackground from "@/components/AnimatedBackground";
@@ -19,17 +18,6 @@ export default function RegisterPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  useEffect(() => {
-    async function checkUser() {
-      const user = await getCurrentUser();
-
-      if (user) {
-        router.replace("/dashboard");
-      }
-    }
-
-    checkUser();
-  }, [router]);
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();

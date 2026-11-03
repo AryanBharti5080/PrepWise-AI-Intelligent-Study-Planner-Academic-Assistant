@@ -12,7 +12,6 @@ import {
   Clock3,
   Target,
   GraduationCap,
-  Layers,
   BookMarked,
   Lightbulb,
 } from "lucide-react";
