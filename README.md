@@ -47,6 +47,21 @@ Traditional studying frequently suffers from cognitive overload, unstructured st
 5. **Night / Light Adaptive UI**: Seamless dark mode support across the entire interface with zero hydration flicker.
 
 ---
+## 🌐 Live Demo
+
+Experience **PrepWise AI**, an intelligent study planning and academic assistant designed to help students organize their preparation, track academic progress, and explore AI-powered career guidance.
+
+🔗 **Live Application:** https://prepwise-ai-brown.vercel.app
+
+### 🚀 Getting Started
+
+1. Open the live application using the link above.
+2. Create a new account using the Register page.
+3. Log in with your registered email and password.
+4. Explore the available features, including AI Study Planner, Saved Study Plans, Analytics Dashboard, Quiz, Revision Assistant, and Career Assistant.
+
+> **Note:** This is a deployed demonstration of the PrepWise AI academic assistance platform. Some features may require a registered account.
+
 
 ## Key Features
 
