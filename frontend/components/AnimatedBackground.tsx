@@ -39,27 +39,54 @@ export default function AnimatedBackground() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
     >
-      {/* 1. Base Mesh Background (Light enhanced, Dark completely untouched) */}
+      {/* ======================================================== */}
+      {/* 1. BASE MESH LAYER                                       */}
+      {/* Light: Smooth multi-stop sapphire/lavender mesh          */}
+      {/* Dark: Deep cosmic navy (#080d1a) with rich indigo mesh   */}
+      {/* ======================================================== */}
       <div className="absolute inset-0 bg-radial-mesh-light dark:bg-radial-mesh-dark transition-colors duration-200" />
 
-      {/* 2. Ambient Lighting Orbs */}
-      {/* Light mode: Elegant soft sapphire and indigo gradients. Dark mode: Exactly as original */}
-      <div className="absolute -top-32 -left-20 h-[520px] w-[520px] rounded-full bg-gradient-to-br from-blue-300/35 via-indigo-200/25 to-transparent blur-[120px] animate-orb-float-1 dark:from-transparent dark:to-transparent dark:bg-blue-600/8 dark:blur-[140px]" />
-      <div className="absolute top-[25%] -right-20 h-[480px] w-[480px] rounded-full bg-gradient-to-bl from-sky-300/30 via-cyan-200/20 to-transparent blur-[120px] animate-orb-float-2 dark:from-transparent dark:to-transparent dark:bg-indigo-600/6 dark:blur-[140px]" />
-      <div className="absolute -bottom-28 left-[22%] h-[480px] w-[480px] rounded-full bg-gradient-to-tr from-indigo-200/30 via-purple-200/20 to-transparent blur-[120px] animate-orb-float-1 dark:hidden" />
-
-      {/* 3. Subtle Texture Grid (Crisp micro-dot pattern in Light, exact original cyber-grid in Dark) */}
+      {/* ======================================================== */}
+      {/* 2. SUBTLE TEXTURE GRID                                   */}
+      {/* Light: Micro-dot matrix for modern SaaS depth            */}
+      {/* Dark: Electric cyan/slate tech grid                      */}
+      {/* ======================================================== */}
       <div className="absolute inset-0 bg-cyber-grid-light dark:bg-cyber-grid-dark opacity-80" />
 
-      {/* 4. Desktop-only Interactive Light-Mode Ambient Cursor Glow (Hidden in dark mode to strictly preserve dark mode) */}
+      {/* ======================================================== */}
+      {/* 3. LIGHT MODE AMBIENT LIGHTING ORBS (Hidden in Dark)     */}
+      {/* Soft, beautiful sapphire, indigo, and sky accents        */}
+      {/* ======================================================== */}
+      <div className="dark:hidden absolute -top-32 -left-20 h-[520px] w-[520px] rounded-full bg-gradient-to-br from-blue-300/35 via-indigo-200/25 to-transparent blur-[120px] animate-orb-float-1" />
+      <div className="dark:hidden absolute top-[25%] -right-20 h-[480px] w-[480px] rounded-full bg-gradient-to-bl from-sky-300/30 via-cyan-200/20 to-transparent blur-[120px] animate-orb-float-2" />
+      <div className="dark:hidden absolute -bottom-28 left-[22%] h-[480px] w-[480px] rounded-full bg-gradient-to-tr from-indigo-200/30 via-purple-200/20 to-transparent blur-[120px] animate-orb-float-1" />
+
+      {/* ======================================================== */}
+      {/* 4. DARK MODE AMBIENT LIGHTING ORBS (Hidden in Light)     */}
+      {/* Restores the authentic deep neon ambient glow without    */}
+      {/* affecting Light Mode                                     */}
+      {/* ======================================================== */}
+      <div className="hidden dark:block absolute -top-32 -left-24 h-[550px] w-[550px] rounded-full bg-gradient-to-br from-blue-600/25 via-indigo-600/18 to-transparent blur-[120px] animate-orb-float-1" />
+      <div className="hidden dark:block absolute top-[20%] -right-24 h-[560px] w-[560px] rounded-full bg-gradient-to-bl from-cyan-500/20 via-blue-600/12 to-transparent blur-[130px] animate-orb-float-2" />
+      <div className="hidden dark:block absolute top-[55%] left-[10%] h-[480px] w-[480px] rounded-full bg-gradient-to-tr from-purple-600/15 via-indigo-800/12 to-transparent blur-[120px] animate-orb-float-3" />
+      <div className="hidden dark:block absolute -bottom-28 right-[18%] h-[560px] w-[560px] rounded-full bg-gradient-to-tl from-blue-500/18 via-indigo-900/16 to-transparent blur-[130px] animate-orb-float-1" />
+
+      {/* ======================================================== */}
+      {/* 5. INTERACTIVE CURSOR-FOLLOWING GLOW                     */}
+      {/* Light: Soft azure halo                                   */}
+      {/* Dark: Electric cyan tech aura                            */}
+      {/* ======================================================== */}
       {mounted && (
         <div
-          className="dark:hidden transition-transform duration-300 ease-out will-change-transform"
+          className="transition-transform duration-300 ease-out will-change-transform"
           style={{
             transform: `translate3d(${mousePos.x - 220}px, ${mousePos.y - 220}px, 0)`,
           }}
         >
-          <div className="h-[440px] w-[440px] rounded-full bg-radial from-blue-400/18 via-indigo-300/10 to-transparent blur-[80px]" />
+          {/* Light cursor glow */}
+          <div className="dark:hidden h-[440px] w-[440px] rounded-full bg-radial from-blue-400/18 via-indigo-300/10 to-transparent blur-[80px]" />
+          {/* Dark cursor glow */}
+          <div className="hidden dark:block h-[440px] w-[440px] rounded-full bg-radial from-cyan-400/12 via-blue-500/8 to-transparent blur-[80px]" />
         </div>
       )}
     </div>
