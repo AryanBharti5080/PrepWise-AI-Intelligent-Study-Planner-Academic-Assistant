@@ -63,18 +63,12 @@ export default function AnimatedBackground() {
 
       {/* ======================================================== */}
       {/* 4. DARK MODE AMBIENT LIGHTING ORBS (Hidden in Light)     */}
-      {/* Restores the authentic deep neon ambient glow without    */}
-      {/* affecting Light Mode                                     */}
+      {/* Disabled in dark mode to keep pure card background       */}
       {/* ======================================================== */}
-      <div className="hidden dark:block absolute -top-32 -left-24 h-[550px] w-[550px] rounded-full bg-gradient-to-br from-blue-600/25 via-indigo-600/18 to-transparent blur-[120px] animate-orb-float-1" />
-      <div className="hidden dark:block absolute top-[20%] -right-24 h-[560px] w-[560px] rounded-full bg-gradient-to-bl from-cyan-500/20 via-blue-600/12 to-transparent blur-[130px] animate-orb-float-2" />
-      <div className="hidden dark:block absolute top-[55%] left-[10%] h-[480px] w-[480px] rounded-full bg-gradient-to-tr from-purple-600/15 via-indigo-800/12 to-transparent blur-[120px] animate-orb-float-3" />
-      <div className="hidden dark:block absolute -bottom-28 right-[18%] h-[560px] w-[560px] rounded-full bg-gradient-to-tl from-blue-500/18 via-indigo-900/16 to-transparent blur-[130px] animate-orb-float-1" />
 
       {/* ======================================================== */}
       {/* 5. INTERACTIVE CURSOR-FOLLOWING GLOW                     */}
       {/* Light: Soft azure halo                                   */}
-      {/* Dark: Electric cyan tech aura                            */}
       {/* ======================================================== */}
       {mounted && (
         <div
@@ -85,8 +79,6 @@ export default function AnimatedBackground() {
         >
           {/* Light cursor glow */}
           <div className="dark:hidden h-[440px] w-[440px] rounded-full bg-radial from-blue-400/18 via-indigo-300/10 to-transparent blur-[80px]" />
-          {/* Dark cursor glow */}
-          <div className="hidden dark:block h-[440px] w-[440px] rounded-full bg-radial from-cyan-400/12 via-blue-500/8 to-transparent blur-[80px]" />
         </div>
       )}
     </div>
