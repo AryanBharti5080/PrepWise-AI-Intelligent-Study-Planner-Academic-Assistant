@@ -1,11 +1,12 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { AlertCircle, Lock, Mail, ArrowRight, Sparkles } from "lucide-react";
+import { getCurrentUser } from "@/lib/auth";
+import { AlertCircle, Lock, Mail } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import AnimatedBackground from "@/components/AnimatedBackground";
 
@@ -17,7 +18,17 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    async function checkUser() {
+      const user = await getCurrentUser();
 
+      if (user) {
+        router.replace("/dashboard");
+      }
+    }
+
+    checkUser();
+  }, [router]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -42,11 +53,12 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden text-slate-900 transition-colors duration-150 dark:text-slate-100">
+    <main className="relative min-h-screen text-slate-900 dark:text-slate-100 transition-colors">
+      {/* Dynamic Animated Educational Background */}
       <AnimatedBackground />
 
       {/* Navigation */}
-      <nav className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/70 px-6 py-4.5 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/70 md:px-12">
+      <nav className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 px-6 py-4.5 backdrop-blur-md md:px-12">
         <Link
           href="/"
           className="text-2xl font-extrabold tracking-tight text-blue-600 dark:text-blue-400"
@@ -76,12 +88,12 @@ export default function LoginPage() {
 
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
               Login to{" "}
-              <span className="text-blue-600 dark:text-blue-400">
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 bg-clip-text text-transparent dark:from-blue-400 dark:via-indigo-300 dark:to-sky-300">
                 PrepWise AI
               </span>
             </h1>
 
-            <p className="mt-2.5 text-sm font-medium text-slate-600 dark:text-slate-400">
+            <p className="mt-2.5 text-sm text-slate-600 dark:text-slate-400">
               Continue your personalized study journey.
             </p>
           </div>
@@ -89,7 +101,7 @@ export default function LoginPage() {
           {/* Card */}
           <form
             onSubmit={handleLogin}
-            className="rounded-3xl border border-slate-200/90 bg-white/90 p-6 shadow-xl shadow-blue-500/5 backdrop-blur-md transition duration-300 hover:shadow-2xl hover:shadow-blue-500/10 dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-none sm:p-8"
+            className="rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-xl shadow-slate-200/50 backdrop-blur-md transition duration-300 hover:shadow-2xl hover:shadow-slate-200/70 dark:border-slate-800/80 dark:bg-slate-900/90 dark:shadow-none dark:hover:border-slate-700 sm:p-8"
           >
             {errorMessage && (
               <div
