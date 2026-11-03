@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { AlertCircle, CheckCircle2, Lock, Mail, User } from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AlertCircle, CheckCircle2, Lock, Mail, User, Sparkles } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 import AnimatedBackground from "@/components/AnimatedBackground";
 
 export default function RegisterPage() {
@@ -49,12 +49,11 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="relative min-h-screen text-slate-900 dark:text-slate-100 transition-colors">
-      {/* Dynamic Animated Educational Background */}
+    <main className="relative min-h-screen overflow-x-hidden text-slate-900 transition-colors duration-150 dark:text-slate-100">
       <AnimatedBackground />
 
       {/* Navigation */}
-      <nav className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 px-6 py-4.5 backdrop-blur-md md:px-12">
+      <nav className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/70 px-6 py-4.5 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/70 md:px-12">
         <Link
           href="/"
           className="text-2xl font-extrabold tracking-tight text-blue-600 dark:text-blue-400"
@@ -84,13 +83,13 @@ export default function RegisterPage() {
 
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
               Create your{" "}
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 bg-clip-text text-transparent dark:from-blue-400 dark:via-indigo-300 dark:to-sky-300">
+              <span className="text-blue-600 dark:text-blue-400">
                 PrepWise
               </span>{" "}
               account
             </h1>
 
-            <p className="mt-2.5 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-2.5 text-sm font-medium text-slate-600 dark:text-slate-400">
               Start building smarter study plans with AI.
             </p>
           </div>
@@ -98,7 +97,7 @@ export default function RegisterPage() {
           {/* Card */}
           <form
             onSubmit={handleRegister}
-            className="rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-xl shadow-slate-200/50 backdrop-blur-md transition duration-300 hover:shadow-2xl hover:shadow-slate-200/70 dark:border-slate-800/80 dark:bg-slate-900/90 dark:shadow-none dark:hover:border-slate-700 sm:p-8"
+            className="rounded-3xl border border-slate-200/90 bg-white/90 p-6 shadow-xl shadow-blue-500/5 backdrop-blur-md transition duration-300 hover:shadow-2xl hover:shadow-blue-500/10 dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-none sm:p-8"
           >
             {errorMessage && (
               <div

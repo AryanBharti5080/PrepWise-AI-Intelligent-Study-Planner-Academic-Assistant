@@ -22,11 +22,11 @@ import AnimatedBackground from "@/components/AnimatedBackground";
 export default function HomePage() {
   return (
     <main className="relative min-h-screen overflow-x-hidden text-slate-900 transition-colors duration-150 dark:text-slate-100">
-      {/* Dynamic Animated Educational Background */}
+      {/* Background System */}
       <AnimatedBackground />
 
       {/* Navigation */}
-      <nav className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/80 px-6 py-4.5 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/80 md:px-12">
+      <nav className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/75 px-6 py-4.5 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/85 md:px-12">
         <Link
           href="/"
           className="group flex items-center gap-2.5 text-2xl font-extrabold tracking-tight text-blue-600 dark:text-blue-400"
@@ -34,7 +34,7 @@ export default function HomePage() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-500/30 transition group-hover:scale-105">
             <GraduationCap size={20} />
           </div>
-          <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent dark:from-blue-400 dark:via-indigo-300 dark:to-blue-300">
+          <span className="text-blue-600 dark:text-blue-400">
             PrepWise AI
           </span>
         </Link>
@@ -81,7 +81,7 @@ export default function HomePage() {
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
           <Link
             href="/register"
-            className="group flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-4 font-bold text-white shadow-lg shadow-blue-500/25 transition duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/30 focus:outline-none focus:ring-4 focus:ring-blue-200 dark:shadow-none dark:hover:bg-blue-500 dark:focus:ring-blue-900/50"
+            className="group flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-4 font-bold text-white shadow-md transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 dark:hover:bg-blue-500 dark:focus:ring-blue-900/50"
           >
             Get Started
             <ArrowRight
@@ -92,7 +92,7 @@ export default function HomePage() {
 
           <Link
             href="/login"
-            className="rounded-xl border border-slate-300/80 bg-white/90 px-8 py-4 font-bold text-slate-700 shadow-xs backdrop-blur-xs transition duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100 dark:border-slate-700/80 dark:bg-slate-900/90 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:border-slate-600 dark:focus:ring-slate-800"
+            className="rounded-xl border border-slate-300 bg-white px-8 py-4 font-bold text-slate-700 shadow-xs transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:ring-slate-800"
           >
             I Already Have an Account
           </Link>
@@ -149,7 +149,7 @@ export default function HomePage() {
           <div className="mt-16 grid gap-6 lg:grid-cols-2">
 
             {/* Left */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900 md:p-10">
+            <div className="rounded-3xl border border-slate-200/90 bg-white/90 p-8 shadow-sm shadow-slate-200/50 backdrop-blur-md transition duration-200 hover:shadow-md hover:border-blue-200 dark:border-slate-800 dark:bg-slate-900 md:p-10 dark:shadow-none">
               <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600 shadow-xs dark:border-blue-900/50 dark:bg-blue-950/60 dark:text-blue-400">
                 <Sparkles size={23} />
               </div>
@@ -192,7 +192,7 @@ export default function HomePage() {
             </div>
 
             {/* Right */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900 md:p-10">
+            <div className="rounded-3xl border border-slate-200/90 bg-white/90 p-8 shadow-sm shadow-slate-200/50 backdrop-blur-md transition duration-200 hover:shadow-md hover:border-blue-200 dark:border-slate-800 dark:bg-slate-900 md:p-10 dark:shadow-none">
               <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600 shadow-xs dark:border-blue-900/50 dark:bg-blue-950/60 dark:text-blue-400">
                 <Target size={23} />
               </div>
@@ -412,7 +412,7 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-xs transition duration-200 hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+    <div className="group rounded-2xl border border-slate-200/90 bg-white/90 p-6 text-left shadow-sm shadow-slate-200/40 backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md hover:shadow-blue-500/5 dark:translate-y-0 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 dark:shadow-none">
       <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600 shadow-2xs dark:border-blue-900/60 dark:bg-blue-950/60 dark:text-blue-400">
         {icon}
       </div>
@@ -468,7 +468,7 @@ function MiniFeature({
   description: string;
 }) {
   return (
-    <div className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition duration-200 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+    <div className="group rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-sm shadow-slate-200/40 backdrop-blur-md transition duration-200 hover:border-blue-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 dark:shadow-none">
       <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
         {icon}
       </div>
@@ -497,7 +497,7 @@ function ProcessCard({
   description: string;
 }) {
   return (
-    <div className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-xs transition duration-200 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+    <div className="group relative rounded-2xl border border-slate-200/90 bg-white/90 p-6 shadow-sm shadow-slate-200/40 backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md hover:shadow-blue-500/5 dark:translate-y-0 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 dark:shadow-none">
       <div className="flex items-center justify-between">
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-100 dark:bg-blue-950/60 dark:text-blue-400 dark:border-blue-900/60">
           {icon}

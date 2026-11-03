@@ -30,14 +30,18 @@ body {
 }
 
 /* Crisp and readable background gradients */
+/* Light Mode: Upgraded to multi-stop soft ambient mesh with sapphire & lavender tints */
 .bg-radial-mesh-light {
-  background-color: #f8fafc;
+  background-color: #f6f9fd;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(219, 234, 254, 0.4) 0px, transparent 40%),
-    radial-gradient(at 100% 0%, rgba(224, 231, 255, 0.35) 0px, transparent 40%),
-    radial-gradient(at 50% 100%, rgba(241, 245, 249, 0.5) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(219, 234, 254, 0.75) 0px, transparent 55%),
+    radial-gradient(at 100% 0%, rgba(224, 231, 255, 0.7) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(207, 250, 254, 0.6) 0px, transparent 55%),
+    radial-gradient(at 0% 100%, rgba(243, 232, 255, 0.55) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(238, 242, 255, 0.65) 0px, transparent 65%);
 }
 
+/* DARK MODE: EXACT ORIGINAL SPECIFICATION (UNTOUCHED) */
 .dark .bg-radial-mesh-dark {
   background-color: #0b1120;
   background-image: 
@@ -46,15 +50,13 @@ body {
     radial-gradient(at 50% 100%, rgba(15, 23, 42, 0.4) 0px, transparent 50%);
 }
 
+/* Light Mode: Crisp, refined micro-matrix for modern SaaS depth */
 .bg-cyber-grid-light {
-  background-image: 
-    linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 100%);
+  background-image: radial-gradient(rgba(99, 102, 241, 0.16) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
 }
 
+/* DARK MODE: EXACT ORIGINAL SPECIFICATION (UNTOUCHED) */
 .dark .bg-cyber-grid-dark {
   background-image: 
     linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
